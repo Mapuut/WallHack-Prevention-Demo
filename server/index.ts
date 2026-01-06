@@ -14,7 +14,7 @@ import { createBots, updateBot } from './bots';
 import { Perf } from './perf';
 import { MSG_TYPE, encodeUpdate, decodeInput, decodeShoot, decodeToggleMode } from './protocol';
 
-const PORT = 3000;
+const PORT = 3005;
 const VIEW_DISTANCE = 200;
 const BOTS_COUNT = 600;
 
