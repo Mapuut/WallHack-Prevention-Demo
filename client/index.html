@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shooter Demo - Line of Sight Filtering</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      overflow: hidden;
+      background: #0a0a0f;
+    }
+    
+    #canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      cursor: crosshair;
+    }
+    
+    #ui {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: #e8e8e8;
+      font-size: 14px;
+      background: linear-gradient(135deg, rgba(20, 25, 35, 0.92) 0%, rgba(15, 18, 28, 0.95) 100%);
+      padding: 24px;
+      border-radius: 16px;
+      user-select: none;
+      z-index: 100;
+      min-width: 320px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+    }
+    
+    #ui h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #fff;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    #ui h1::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #3ecf8e;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #3ecf8e;
+    }
+    
+    .control-group {
+      margin: 16px 0;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .control-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 400;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8a8a9a;
+    }
+    
+    button {
+      background: linear-gradient(135deg, #3ecf8e 0%, #2ab377 100%);
+      color: #0a0a0f;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      transition: all 0.2s ease;
+      width: 100%;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+    }
+    
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(62, 207, 142, 0.3);
+    }
+    
+    button.active {
+      background: linear-gradient(135deg, #f97583 0%, #e85a6b 100%);
+    }
+    
+    button.active:hover {
+      box-shadow: 0 4px 16px rgba(249, 117, 131, 0.3);
+    }
+    
+    .status {
+      margin-top: 8px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #6a6a7a;
+    }
+    
+    .info {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 12px;
+      line-height: 1.8;
+      color: #8a8a9a;
+    }
+    
+    .info strong {
+      color: #b8b8c8;
+      font-weight: 600;
+    }
+    
+    .stats {
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #6a6a7a;
+      display: grid;
+      gap: 6px;
+    }
+    
+    .stats span {
+      color: #3ecf8e;
+    }
+    
+    .warning {
+      color: #f0a060;
+      margin-top: 16px;
+      font-size: 11px;
+      line-height: 1.6;
+      padding: 10px;
+      background: rgba(240, 160, 96, 0.08);
+      border-radius: 6px;
+      border-left: 3px solid #f0a060;
+    }
+    
+    #instructions {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(135deg, rgba(20, 25, 35, 0.98) 0%, rgba(15, 18, 28, 0.98) 100%);
+      color: #fff;
+      padding: 48px 64px;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 300;
+      display: none;
+      z-index: 1000;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+    
+    #instructions.show {
+      display: block;
+    }
+    
+    #instructions small {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      color: #6a6a7a;
+    }
+    
+    /* Modern Crosshair - gap in center, no dot */
+    #crosshair {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50;
+      pointer-events: none;
+      width: 40px;
+      height: 40px;
+    }
+    
+    #crosshair .line {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.8), 0 0 4px rgba(255, 255, 255, 0.3);
+    }
+    
+    #crosshair .line-h {
+      width: 10px;
+      height: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    #crosshair .line-h.left {
+      left: 0;
+    }
+    
+    #crosshair .line-h.right {
+      right: 0;
+    }
+    
+    #crosshair .line-v {
+      width: 2px;
+      height: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    #crosshair .line-v.top {
+      top: 0;
+    }
+    
+    #crosshair .line-v.bottom {
+      bottom: 0;
+    }
+    
+    #serverStats {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      color: #e8e8e8;
+      font-size: 12px;
+      background: linear-gradient(135deg, rgba(20, 25, 35, 0.92) 0%, rgba(15, 18, 28, 0.95) 100%);
+      padding: 20px;
+      border-radius: 12px;
+      user-select: none;
+      z-index: 100;
+      min-width: 300px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    #serverStats h2 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #fff;
+      letter-spacing: 0.5px;
+      font-family: 'Outfit', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    #serverStats h2::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #58a6ff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #58a6ff;
+    }
+    
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+    
+    .stat-label {
+      color: #6a6a7a;
+    }
+    
+    .stat-value {
+      color: #3ecf8e;
+      font-weight: 600;
+    }
+    
+    .stat-value.warning-text {
+      color: #f0a060;
+    }
+    
+    .stat-value.highlight {
+      color: #58a6ff;
+    }
+    
+    .stat-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .stat-section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #4a4a5a;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  
+  <div id="ui">
+    <h1>Wallhack Prevention Demo</h1>
+    
+    <div class="control-group">
+      <span class="control-label">Wallhack Visualization</span>
+      <button id="wallhackBtn">Enable Wallhack</button>
+      <div class="status" id="wallhackStatus">OFF — Normal rendering</div>
+    </div>
+    
+    <div class="control-group">
+      <span class="control-label">Server Filtering Mode</span>
+      <button id="serverModeBtn">Switch to LOS Mode</button>
+      <div class="status" id="serverModeStatus">CLASSICAL — All entities in 200m range</div>
+    </div>
+    
+    <div class="stats">
+      <div>Visible Entities: <span id="entityCount">0</span></div>
+      <div>Position: <span id="position">0, 0, 0</span></div>
+      <div>FPS: <span id="fps">0</span></div>
+    </div>
+    
+    <div class="info">
+      <strong>Controls</strong><br>
+      WASD — Move · Mouse — Look<br>
+      Click canvas to capture pointer
+    </div>
+    
+    <div class="warning">
+      CLASSICAL: Wallhack reveals all nearby entities<br>
+      LOS MODE: Server only sends visible entities — wallhack is useless!
+    </div>
+  </div>
+  
+  <div id="serverStats">
+    <h2>Server Stats</h2>
+    
+
+    <div>
+      <div class="stat-row">
+        <span class="stat-label">Mode</span>
+        <span class="stat-value highlight" id="statMode">CLASSICAL</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Tick Rate</span>
+        <span class="stat-value" id="statTickRate">30 Hz</span>
+      </div>
+    </div>
+    
+    <div class="stat-section">
+      <div class="stat-section-title">World</div>
+      <div class="stat-row">
+        <span class="stat-label">Total Entities</span>
+        <span class="stat-value" id="statTotalEntities">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Total Obstacles</span>
+        <span class="stat-value" id="statTotalObstacles">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Players Online</span>
+        <span class="stat-value" id="statPlayers">0</span>
+      </div>
+    </div>
+    
+    <div class="stat-section">
+      <div class="stat-section-title">Performance (per second)</div>
+      <div class="stat-row">
+        <span class="stat-label">Tick Time</span>
+        <span class="stat-value" id="statTickTime">0 ms/s</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">LOS Calc</span>
+        <span class="stat-value" id="statLosTime">0 ms/s</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Avg per Tick</span>
+        <span class="stat-value" id="statTickAvg">0.00 ms</span>
+      </div>
+    </div>
+    
+    <div class="stat-section">
+      <div class="stat-section-title">Your View</div>
+      <div class="stat-row">
+        <span class="stat-label">Visible Entities</span>
+        <span class="stat-value" id="statVisible">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Bandwidth</span>
+        <span class="stat-value" id="statDataSent">— KB/s</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="instructions" class="show">
+    Click to start<br>
+    <small style="opacity: 0.7;">Press ESC to unlock pointer</small>
+  </div>
+  
+  <!-- Crosshair (modern gap style) -->
+  <div id="crosshair">
+    <div class="line line-h left"></div>
+    <div class="line line-h right"></div>
+    <div class="line line-v top"></div>
+    <div class="line line-v bottom"></div>
+  </div>
+  
+  <script src="client.js"></script>
+</body>
+</html>
+
