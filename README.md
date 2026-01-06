@@ -2,6 +2,8 @@
 
 A demonstration of server-side line-of-sight filtering to prevent wallhack exploits in shooter games.
 
+**Live demo:** [https://wallhack-prevention.demo.nudeca.net/](https://wallhack-prevention.demo.nudeca.net/)
+
 ## Features
 
 - **600 AI Bots** moving around a 3D terrain
