@@ -1,18 +1,13 @@
 {
   "name": "shooter-demo",
   "version": "1.0.0",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
   "description": "Shooter game demo with line-of-sight based entity filtering",
-  "type": "module",
   "scripts": {
     "dev": "bun run server/index.ts",
     "start": "bun run server/index.ts"
   },
-  "dependencies": {
-    "ws": "^8.16.0"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.5.10",
-    "bun-types": "latest"
-  }
+  "type": "module"
 }
-

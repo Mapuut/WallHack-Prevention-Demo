@@ -1,12 +1,9 @@
-// import { WebSocketServer, WebSocket } from 'ws';
 import type { 
   Entity, 
   ClientConnection, 
   GameState, 
-  UpdateMessage, 
   ConfigMessage,
   Vector3,
-  ServerStats,
   Bullet,
   HitEvent
 } from './types';
