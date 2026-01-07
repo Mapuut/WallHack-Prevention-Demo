@@ -2,7 +2,7 @@
 
 A demonstration of server-side line-of-sight filtering to prevent wallhack exploits in shooter games.
 
-**Live demo:** [https://wallhack-prevention.demo.nudeca.net/](https://wallhack-prevention.demo.nudeca.net/)
+**Live demo:** [https://demo.nudeca.net/wallhack-prevention/](https://demo.nudeca.net/wallhack-prevention/)
 
 ## Features
 
