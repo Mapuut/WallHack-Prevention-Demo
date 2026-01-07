@@ -2718,7 +2718,7 @@ function update() {
 // WebSocket connection
 function connect() {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+  const ws = new WebSocket(`${protocol}//${window.location.host}/wallhack-prevention/ws`);
   ws.binaryType = 'arraybuffer'; // Enable binary messages
   
   ws.onopen = () => {

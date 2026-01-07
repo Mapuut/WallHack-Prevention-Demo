@@ -78,8 +78,9 @@ const server = serve({
   port: PORT,
   fetch(req, server) {
     const url = new URL(req.url);
+    const BASE_PATH = '/wallhack-prevention';
     
-    if (url.pathname === '/ws') {
+    if (url.pathname === `${BASE_PATH}/ws`) {
       // Upgrade to WebSocket
       if (server.upgrade(req)) {
         return; // Successfully upgraded
@@ -88,12 +89,22 @@ const server = serve({
     }
     
     // Serve static files
-    if (url.pathname === '/' || url.pathname === '/index.html') {
+    if (url.pathname === `${BASE_PATH}/` || url.pathname === `${BASE_PATH}/index.html`) {
       return new Response(Bun.file('client/index.html'));
     }
     
-    if (url.pathname === '/client.js') {
+    if (url.pathname === `${BASE_PATH}/client.js`) {
       return new Response(Bun.file('client/client.js'));
+    }
+    
+    // Redirect exact base path (without trailing slash) to base path with slash
+    if (url.pathname === BASE_PATH) {
+      return Response.redirect(`${url.origin}${BASE_PATH}/`, 301);
+    }
+    
+    // Redirect any other path (that's not a file or ws) to the base path
+    if (!url.pathname.startsWith(`${BASE_PATH}/`)) {
+      return Response.redirect(`${url.origin}${BASE_PATH}/`, 301);
     }
     
     return new Response('Not found', { status: 404 });
