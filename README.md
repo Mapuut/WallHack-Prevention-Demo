@@ -2,6 +2,16 @@
 
 A demonstration of server-side line-of-sight filtering to prevent wallhack exploits in shooter games.
 
+## What is Line-of-Sight Filtering?
+
+Line-of-sight (LOS) filtering is a server-side anti-cheat technique that prevents wallhack exploits by only sending information about entities that are actually visible to each player. Instead of sending all nearby entities (which wallhacks can reveal), the server performs raycasting checks to determine visibility and filters out entities that are hidden behind walls or terrain.
+
+**Why it works:**
+- Wallhacks work by rendering entities that the client receives but shouldn't see
+- If the server never sends hidden entities, wallhacks have nothing to reveal
+- The client literally doesn't know about entities behind walls
+
+
 **Live demo:** [https://demo.nudeca.net/wallhack-prevention/](https://demo.nudeca.net/wallhack-prevention/)
 
 ## Features
@@ -31,7 +41,7 @@ bun install
 bun run dev
 ```
 
-Open your browser to `http://localhost:3000`
+Open your browser to `http://localhost:3005`
 
 ## Controls
 

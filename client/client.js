@@ -2512,6 +2512,7 @@ document.addEventListener('pointerlockchange', () => {
 
 document.addEventListener('mousemove', (e) => {
   if (state.pointerLocked) {
+    console.log('mousemove', e.movementX, e.movementY, e);
     state.mouseMovement.x += e.movementX;
     state.mouseMovement.y += e.movementY;
   }

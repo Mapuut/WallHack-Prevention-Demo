@@ -3,7 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shooter Demo - Line of Sight Filtering</title>
+  
+  <!-- Primary Meta Tags -->
+  <title>Wallhack Prevention Demo - Server-Side Line of Sight Filtering for Games</title>
+  <meta name="title" content="Wallhack Prevention Demo - Server-Side Line of Sight Filtering for Games">
+  <meta name="description" content="Interactive demonstration of server-side line-of-sight filtering to prevent and mitigate wallhack exploits in multiplayer shooter games. See how LOS filtering makes wallhacks useless by only sending visible entities to clients.">
+  <meta name="keywords" content="wallhack prevention, line of sight filtering, game security, anti-cheat, multiplayer games, server-side filtering, raycasting, game development, exploit prevention, wallhack mitigation">
+  <meta name="author" content="Wallhack Prevention Demo">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="English">
+  <meta name="theme-color" content="#0a0a0f">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://demo.nudeca.net/wallhack-prevention/">
+  <meta property="og:title" content="Wallhack Prevention Demo - Server-Side Line of Sight Filtering">
+  <meta property="og:description" content="Interactive demo showing how server-side line-of-sight filtering prevents wallhack exploits in multiplayer games. Compare classical vs LOS filtering modes in real-time.">
+  <meta property="og:site_name" content="Wallhack Prevention Demo">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://demo.nudeca.net/wallhack-prevention/">
+  <meta property="twitter:title" content="Wallhack Prevention Demo - Server-Side Line of Sight Filtering">
+  <meta property="twitter:description" content="Interactive demo showing how server-side line-of-sight filtering prevents wallhack exploits in multiplayer games. Compare classical vs LOS filtering modes in real-time.">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://demo.nudeca.net/wallhack-prevention/">
+  
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Wallhack Prevention Demo",
+    "description": "Interactive demonstration of server-side line-of-sight filtering to prevent wallhack exploits in multiplayer shooter games",
+    "url": "https://demo.nudeca.net/wallhack-prevention/",
+    "applicationCategory": "Game",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Server-side line-of-sight filtering",
+      "Wallhack prevention demonstration",
+      "Real-time entity visibility calculation",
+      "Spatial partitioning for performance",
+      "600 AI bots simulation",
+      "Classical vs LOS mode comparison"
+    ],
+    "keywords": "wallhack prevention, line of sight filtering, game security, anti-cheat, multiplayer games, server-side filtering"
+  }
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600&display=swap');
     
@@ -61,6 +113,33 @@
       background: #3ecf8e;
       border-radius: 50%;
       box-shadow: 0 0 12px #3ecf8e;
+    }
+    
+    #githubLink {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #8a8a9a;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 600;
+      transition: color 0.2s ease;
+      cursor: pointer;
+    }
+    
+    #githubLink:hover {
+      color: #fff;
+    }
+    
+    #githubLink svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
     }
     
     .control-group {
@@ -352,6 +431,13 @@
       CLASSICAL: Wallhack reveals all nearby entities<br>
       LOS MODE: Server only sends visible entities — wallhack is useless!
     </div>
+    
+    <a id="githubLink" href="https://github.com/Mapuut/WallHack-Prevention-Demo" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub">
+      <svg version="1.1" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+        <path d="m1500.6 720.25c0-96.743-32.459-175.87-86.347-237.85 8.6507-22.46 37.459-112.62-8.3331-234.6 0 0-70.474-23.809-230.94 90.87-67.061-19.682-138.96-29.523-210.39-29.84-71.426 0.31769-143.33 10.158-210.31 29.84-160.55-114.68-231.1-90.87-231.1-90.87-45.792 121.98-16.904 212.14-8.2542 234.6-53.808 61.982-86.504 141.11-86.504 237.85 0 339.67 196.18 415.7 382.76 438.08 0 0-134.12 83.092-134.12 222.77-47.855 22.698-250.39 92.219-325.39-43.252 0 0-44.364-85.077-128.73-91.346 0 0-82.061-1.1116-5.7937 53.886 0 0 55.078 27.301 93.33 129.68 0 0 42.538 215.71 363.88 118.81 3.2536 1.6666 1.1904 104.36 1.1904 125.39h578.23s0.9523-206.1 0.9523-271.66c0-161.18-107.62-217.61-137.85-244.99 187.22-21.904 383.72-96.822 383.72-437.37" fill-rule="evenodd" stroke-width=".74402"/>
+      </svg>
+      <span>GitHub Repo</span>
+    </a>
   </div>
   
   <div id="serverStats">
