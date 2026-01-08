@@ -19,7 +19,7 @@ Line-of-sight (LOS) filtering is a server-side anti-cheat technique that prevent
 - **600 AI Bots** moving around a 3D terrain
 - **Spatial Partitioning** (400x400 grid) for efficient raycasting
 - **Two Server Modes:**
-  - **Classical Mode**: Sends all entities within view distance (200m)
+  - **Classical Mode**: Sends all entities within view distance (20 tiles)
   - **Line-of-Sight Mode**: Only sends entities with direct line-of-sight (no terrain/walls blocking)
 - **WebGL Client** with 3D rendering
 - **Wallhack Toggle** to visualize the difference between modes
