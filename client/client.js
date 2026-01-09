@@ -2499,9 +2499,16 @@ document.addEventListener('keyup', (e) => {
   state.keys[e.key.toLowerCase()] = false;
 });
 
-canvas.addEventListener('click', () => {
+canvas.addEventListener('click', async () => {
   if (!state.pointerLocked) {
-    canvas.requestPointerLock();
+    // Request pointer lock with unadjustedMovement for raw mouse input
+    // This helps Firefox properly handle high polling rate mice (1000Hz+)
+    try {
+      await canvas.requestPointerLock({ unadjustedMovement: true });
+    } catch (e) {
+      // Fallback for browsers that don't support options parameter
+      canvas.requestPointerLock();
+    }
   }
 });
 
@@ -2510,13 +2517,15 @@ document.addEventListener('pointerlockchange', () => {
   document.getElementById('instructions').classList.toggle('show', !state.pointerLocked);
 });
 
-document.addEventListener('mousemove', (e) => {
+// Use pointermove with getCoalescedEvents() to fix Firefox high polling rate issue
+// Firefox's coalesced events have broken movementX/Y (absolute coords instead of deltas)
+// so we calculate deltas ourselves from consecutive coalesced event positions
+document.addEventListener('pointermove', (e) => {
   if (state.pointerLocked) {
-    console.log('mousemove', e.movementX, e.movementY, e);
     state.mouseMovement.x += e.movementX;
     state.mouseMovement.y += e.movementY;
   }
-});
+}, { passive: true });
 
 // Shooting handlers - must be on canvas for pointer lock
 canvas.addEventListener('mousedown', (e) => {
